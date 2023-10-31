@@ -1,29 +1,38 @@
-import React from 'react';
+import React, { lazy, Suspense, FC } from 'react';
+import { Route, Routes, Navigate } from 'react-router-dom';
+import {Tab} from "./app/store.types";
 
-import {RootState} from "./app/store";
-import {useSelector} from "react-redux";
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+const  DummyTable = lazy(() => import("./pages/tabs/DummyTable"))  ;
+const  DummyChart = lazy(() => import("./pages/tabs/DummyChart"))  ;
+const  DummyList  = lazy(() => import("./pages/tabs/DummyList"))  ;
 
-import TabElement from "./Components/TabElement";
-import TabList from "./Components/TabList";
 
-const Routing = () => {
-    const {tabsList} = useSelector((state: RootState) => state.tabs);
+const Routing: FC<{dynamicTabRoutes:Tab[]}> = ({dynamicTabRoutes}) => {
+    const DEFAULT_PATH = `/${dynamicTabRoutes[0].path}`;
+
+    const routes = {
+        "dummyTable": DummyTable,
+        "dummyChart": DummyChart,
+        "dummyList": DummyList,
+    };
 
     return (
-        <Router>
-            <TabList/>
+        <Suspense fallback={<div>loading...</div>}>
             <Routes>
-                <Route path="/" element={<TabElement tab={tabsList[0]}/>}/>
-                {tabsList.map(tab => (
-                    <Route
-                        key={tab.id}
-                        path={`/${tab.path}`}
-                        element={<TabElement tab={tab}/>}
-                    />
-                ))}
+                <Route path="/" element={<Navigate to={DEFAULT_PATH} />} />
+                {dynamicTabRoutes.map(tab => {
+                    const Component = routes[tab.id] ;
+                    return (
+                        <Route
+                            key={tab.id}
+                            path={`/${tab.path}`}
+                            element={<Component tab={tab}/>}
+                        />
+                    );
+                })}
+                <Route path="*" element={<Navigate to={DEFAULT_PATH} />} />
             </Routes>
-        </Router>
+        </Suspense>
     );
 };
 

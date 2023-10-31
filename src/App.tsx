@@ -1,18 +1,29 @@
 import React from 'react';
 
-import {Provider} from "react-redux";
-import {store} from "./app/store";
+import Routing from "./routes";
+import Layout from "./components/Layout";
+
+import {useTabsController} from "./controllers/useTabsController";
 
 import './App.css';
-import Layout from "./Components/Layout";
+
 
 function App() {
-    return (
-        <Provider store={store}>
-            <Layout/>
-        </Provider>
-    )
+    const {tabsList,isLoading, error} = useTabsController()
 
+    if (isLoading) {
+        return <div>Loading tabs...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
+
+    return (
+        <Layout>
+            <Routing dynamicTabRoutes={tabsList}/>
+        </Layout>
+    )
 }
 
 export default App;

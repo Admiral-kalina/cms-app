@@ -1,6 +1,8 @@
-import React from 'react';
+import React, {FC} from 'react';
+import {TabProps} from "../pages/tabs/types";
 
-const TabElement = ({tab}) => {
+const TabElement:FC<TabProps> = ({tab}) => {
+
     return (
         <div>
             <table>
@@ -11,7 +13,6 @@ const TabElement = ({tab}) => {
                 </tbody>
             </table>
         </div>
-
     );
 };
 

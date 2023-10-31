@@ -1,6 +1,8 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {createAsyncThunk, createSlice,} from '@reduxjs/toolkit';
 
 import {Tab, TabsState} from "../app/store.types";
+
+import {registerLoaderToThunk} from "./utils/registerLoaderToThunk";
 
 const initialState: TabsState = {
     tabsList: [],
@@ -22,24 +24,14 @@ export const fetchTabs = createAsyncThunk<Tab[], void, { rejectValue: string }>(
     }
 );
 
+
 export const tabsSlice = createSlice({
     name: 'tabs',
     initialState,
     reducers: {},
 
     extraReducers: (builder) => {
-        builder
-            .addCase(fetchTabs.pending, (state) => {
-                state.isLoading = true;
-            })
-            .addCase(fetchTabs.fulfilled, (state, action: PayloadAction<Tab[]>) => {
-                state.isLoading = false;
-                state.tabsList = action.payload;
-            })
-            .addCase(fetchTabs.rejected, (state, action: PayloadAction<string>) => {
-                state.isLoading = false;
-                state.error = action.payload ;
-            });
+        registerLoaderToThunk<TabsState, Tab[]>(builder, fetchTabs, 'tabsList')
     }
 });
 

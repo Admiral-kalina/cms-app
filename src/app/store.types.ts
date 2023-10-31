@@ -5,8 +5,11 @@ export type Tab = {
     path: string;
 };
 
+
+
 export interface TabsState {
     tabsList: Tab[];
     isLoading: boolean;
     error: string | null;
+    [key: string]: Tab[] | boolean | string | null | undefined;
 }

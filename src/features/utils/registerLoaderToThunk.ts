@@ -8,7 +8,7 @@ type GenericState = {
 
 export function registerLoaderToThunk<TState extends GenericState, TData extends Draft<TState>[keyof Draft<TState>]>(
     builder: ActionReducerMapBuilder<TState>,
-    thunk: AsyncThunk<TData, any, any>,
+    thunk: AsyncThunk<TData, unknown, unknown>,
     dataKey: keyof TState
 ) {
     builder
